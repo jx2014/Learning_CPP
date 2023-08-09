@@ -3,9 +3,10 @@
 
 #include <iostream>
 using namespace std;
+#include "VisualStudio2012/1/Sales_item.h"
+
 
 /*
-
 class Vector {
 private:
     double* elem;
@@ -256,13 +257,93 @@ unique_ptr<Shape> read_shape(istream& is) // read shape descriptions from input 
         a.elem = nullptr; // now a has no elements
         a.sz = 0;
     }
+
+    Vector f()
+    {
+        Vector x(1000);
+        Vector y(1000);
+        Vector z(1000);
+        // ...
+        z = x; // we get a copy
+        y = std::move(x); // we get a move, 
+                          // The standard-library function move() returns an rvalue reference to its argument.
+        // ...
+        return z; // we get a move
+    };
+
+// §3.3.3 Resource Management
+    std::vector<thread> my_threads;
+    Vector init(int n)
+    {
+        thread t{ heartbeat }; // run hear tbeat concurrently (on its own thread)
+        my_threads.push_back(move(t)); // move t into my_threads
+        // ... more initialization ...
+        Section 3.3.3 Resource Management 77
+            Vector vec(n);
+        for (int i = 0; i < vec.size(); ++i) vec[i] = 777;
+        return vec; // move res out of init()
+    }
+    auto v = init(); // star t hear tbeat and initialize v
+
+// §3.4.1 Parameterized Types
+//        generalize a vector-of-double type to a vector-of-anything type by making it a template and
+//        replacing the specific type double with a parameter.
+
+    template<typename T>
+    class Vector {
+    private:
+        T∗ elem; // elem points to an array of sz elements of type T
+        int sz;
+    public:
+        Vector(int s); // constructor: establish invariant, acquire resources
+        ˜Vector() { delete[] elem; } // destructor: release resources
+        // ... copy and move operations ...
+        T& operator[](int i);
+        const T& operator[](int i) const;
+        int size() const { return sz; }
+    };
 */
-
-
 int main()
 {
     std::cout << "Hello World!\n";
     //g();
+    int v1 = 12;
+    int v2(23);
+
+    int sum = 0, val = 1;
+
+    for (int val = 1; val <= 10; val++)
+        sum += val;
+    cout << "Sum of 1 to 10 inclusive is " << sum << endl;
+
+    //while (cin >> val)
+    //    sum += val;
+    //cout << "Sum of 1 to 10 inclusive is " << sum << endl;
+    // press Ctrl + Z to enter EOF
+
+    //Sales_item item1, item2;
+    //cin >> item1 >> item2;
+    //cout << "item1 + item = " << item1 + item2 << endl;
+
+    // Exercise 1.21
+    //Sales_item item1, item2;
+    //cout << "Enter ISBN, qty, price: \n" << endl;
+    //cin >> item1;
+    //cin >> item2;
+    //cout << item1 + item2 << endl;
+
+    // Exercise 1.22
+    //Sales_item book, all_books;
+
+    //while (cin >> book)
+    //    all_books += book;
+
+    //cout << "Total sales is: " << all_books << endl;
+
+
+
+
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

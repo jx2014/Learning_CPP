@@ -1,9 +1,9 @@
 ﻿// ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <iostream>
-using namespace std;
-#include "VisualStudio2012/1/Sales_item.h"
+//#include <iostream>
+//using namespace std;
+//#include "VisualStudio2012/1/Sales_item.h"
 
 
 /*
@@ -303,48 +303,47 @@ unique_ptr<Shape> read_shape(istream& is) // read shape descriptions from input 
         int size() const { return sz; }
     };
 */
-int main()
-{
-    std::cout << "Hello World!\n";
-    //g();
-    int v1 = 12;
-    int v2(23);
 
-    int sum = 0, val = 1;
+//int main()
+//{
+//    std::cout << "Hello World!\n";
+//    //g();
+//    int v1 = 12;
+//    int v2(23);
+//
+//    int sum = 0, val = 1;
+//
+//    for (int val = 1; val <= 10; val++)
+//        sum += val;
+//    cout << "Sum of 1 to 10 inclusive is " << sum << endl;
+//
+//    //while (cin >> val)
+//    //    sum += val;
+//    //cout << "Sum of 1 to 10 inclusive is " << sum << endl;
+//    // press Ctrl + Z to enter EOF
+//
+//    //Sales_item item1, item2;
+//    //cin >> item1 >> item2;
+//    //cout << "item1 + item = " << item1 + item2 << endl;
+//
+//    // Exercise 1.21
+//    //Sales_item item1, item2;
+//    //cout << "Enter ISBN, qty, price: \n" << endl;
+//    //cin >> item1;
+//    //cin >> item2;
+//    //cout << item1 + item2 << endl;
+//
+//    // Exercise 1.22
+//    //Sales_item book, all_books;
+//
+//    //while (cin >> book)
+//    //    all_books += book;
+//
+//    //cout << "Total sales is: " << all_books << endl;
+//    return 0;
+//}
 
-    for (int val = 1; val <= 10; val++)
-        sum += val;
-    cout << "Sum of 1 to 10 inclusive is " << sum << endl;
 
-    //while (cin >> val)
-    //    sum += val;
-    //cout << "Sum of 1 to 10 inclusive is " << sum << endl;
-    // press Ctrl + Z to enter EOF
-
-    //Sales_item item1, item2;
-    //cin >> item1 >> item2;
-    //cout << "item1 + item = " << item1 + item2 << endl;
-
-    // Exercise 1.21
-    //Sales_item item1, item2;
-    //cout << "Enter ISBN, qty, price: \n" << endl;
-    //cin >> item1;
-    //cin >> item2;
-    //cout << item1 + item2 << endl;
-
-    // Exercise 1.22
-    //Sales_item book, all_books;
-
-    //while (cin >> book)
-    //    all_books += book;
-
-    //cout << "Total sales is: " << all_books << endl;
-
-
-
-
-    return 0;
-}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu

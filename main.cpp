@@ -7,6 +7,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch(msg)
     {
+        case WM_LBUTTONDOWN:
+        {
+            TCHAR szFileName[MAX_PATH];
+            HINSTANCE hInstance = GetModuleHandle(NULL);
+            GetModuleFileName(hInstance, szFileName, MAX_PATH);
+            MessageBox(hwnd, szFileName, TEXT("This program is:"), MB_OK | MB_ICONINFORMATION);            
+        }
+        break;
         case WM_CLOSE:
             DestroyWindow(hwnd);
         break;

@@ -30,3 +30,5 @@ int main() {
 
     return 0;
 }
+
+// https://cpp-primer.pages.dev/book/026-2.6._defining_our_own_data_structures.html

@@ -47,17 +47,30 @@ int main() {
     //     punct_cnt = 0;
     // }
 
-    const string hexdigits = "0123456789ABCDEF";
-    cout << "Enter a series of numbers between 0 and 15"
-     << " separated by spaces. Hit ENTER when finished: "
-     << endl;
-    string result;
-    decltype(result.size()) n;
-    //string::size_type n;
-    while (cin >> n)
-        if (n < hexdigits.size())
-            result += hexdigits[n];
-    cout << "Your hex number is: " << result << endl;
+
+    // const string hexdigits = "0123456789ABCDEF";
+    // cout << "Enter a series of numbers between 0 and 15"
+    //  << " separated by spaces. Hit ENTER when finished: "
+    //  << endl;
+    // string result;
+    // decltype(result.size()) n;
+    // //string::size_type n;
+    // while (cin >> n)
+    //     if (n < hexdigits.size())
+    //         result += hexdigits[n];
+    // cout << "Your hex number is: " << result << endl;
+
+    // exercise 3.10 remove all punctuations
+    string line;
+    auto len = line.size();
+
+    while (getline(cin, line)) {                
+        for (auto c : line) {       // for every char in s
+            if (!ispunct(c))     // if the character is punctuation
+                cout << c;            
+        }
+        cout << endl;
+    }
 
     return 0;
 }

@@ -1,34 +1,63 @@
 #include <iostream>
 #include <string>
-#include "Sales_data.h"
- 
+#include <iomanip> // for std::setw()
+#include <cctype>
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::string;
+
 int main() {
+    // int i;
+    // cout << "Enter a value for i: ";
+    // cin >> i;
+    // cout << i;
+
+    // string s1;            // default initialization; s1 is the empty string
+    // cout << "Enter a string for s1: ";
+    // cin >> s1;
+    // string s2 = s1;       // s2 is a copy of  s1
+    // string s3 = "hiya";   // s3 is a copy of the string literal
+    // string s4(10, 123);   // s4 is cccccccccc
+
+    // cout << s1 << " " << s2 << " " << s3 << " " << s4 << endl;
+
+    // string s1, s2;
+    // cin >> s1 >> s2;
+    // cout << s1 << s2 << endl;
+
+    // string word;
+    // while (cin >> word) 
+    //     cout << word << endl;
     
-    Sales_data data1, data2;
-    double price = 0;
+    // string line;
+    // auto len = line.size();
+    // decltype(line.size()) punct_cnt = 0;
 
-    std::cin >> data1.bookNo >> data1.units_sold >> price;
-    data1.revenue = data1.units_sold * price;
-
-    std::cin >> data2.bookNo >> data2.units_sold >> price;
-    data2.revenue = data2.units_sold * price;
-
-    if (data1.bookNo == data2.bookNo) {
-        uint32_t totalCnt = data1.units_sold + data2.units_sold;
-        double totalRevenu = data1.revenue + data2.revenue;
-
-        std::cout << data1.bookNo << " " << totalCnt << " " << totalRevenu << " ";
+    // while (getline(cin, line)) {
+    //     cout << "Size: " << std::setw(5) << line.size() << " ";
         
-        if (totalCnt != 0) 
-            std::cout << totalRevenu / totalCnt << std::endl;
-        else
-            std::cout << "(no sales)" << std::endl;
-    } else {
-        std::cerr << "Data must refer to the same ISBN" << std::endl;
-        return -1;
-    }    
+    //     // count the number of punctuation characters in s
+    //     for (auto c : line)        // for every char in s
+    //         if (ispunct(c))     // if the character is punctuation
+    //             ++punct_cnt;    // increment the punctuation counter
+    //     cout << std::setw(3) << punct_cnt
+    //         << " punctuation characters in line: " << line << endl;
+    //     punct_cnt = 0;
+    // }
+
+    const string hexdigits = "0123456789ABCDEF";
+    cout << "Enter a series of numbers between 0 and 15"
+     << " separated by spaces. Hit ENTER when finished: "
+     << endl;
+    string result;
+    decltype(result.size()) n;
+    //string::size_type n;
+    while (cin >> n)
+        if (n < hexdigits.size())
+            result += hexdigits[n];
+    cout << "Your hex number is: " << result << endl;
 
     return 0;
 }
-
-// https://cpp-primer.pages.dev/book/026-2.6._defining_our_own_data_structures.html

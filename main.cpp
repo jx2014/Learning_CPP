@@ -10,6 +10,48 @@ using std::endl;
 using std::string;
 using std::vector;
 
+class Screen {
+    public:        
+        typedef std::string::size_type pos;
+        Screen() = default;
+        Screen(pos ht, pos wd, char c): height(ht), width(wd), contents(ht * wd, c) {}
+        char get() const { return  contents[cursor]; }
+        inline char get(pos ht, pos wd) const;
+        Screen move(pos r, pos c);
+        Screen set(char);
+        Screen set(pos, pos, char);
+        Screen display(std::ostream &os) { do_display(os); return *this; }
+        const Screen &display(std::ostream &os) const { do_display(os); return *this; }
+    private:
+        pos cursor = 0;
+        pos height = 0, width = 0;
+        std::string contents;
+        void do_display(std::ostream &os) const {os << contents;}
+};
+
+inline Screen Screen::set(char c) {
+    contents[cursor] = c;
+    return *this;
+}
+
+inline Screen Screen::set(pos r, pos col, char ch) {
+    contents[r*width + col] = ch;
+    return *this;
+}
+
+inline Screen Screen::move(pos r, pos c) {
+    pos row = r * width;
+    cursor = row + c;
+    return *this;
+}
+
+char Screen::get(pos r, pos c) const {
+    pos row = r * width;
+    return contents[row + c];
+}
+
+
+
 int main() {
     // int i;
     // cout << "Enter a value for i: ";
@@ -241,37 +283,93 @@ int main() {
     // Read a set of integers into a vector. Print the sum of each pair of adjacent elements. 
     // Change your program so that it prints the sum of the first and last elements, 
     // followed by the sum of the second and second-to-last, and so on.
-    vector<int> ivec;
-    int num;
+    // vector<int> ivec;
+    // int num;
 
-    cout << "Enter some numbers: ";
-    while (cin >> num) {
-        ivec.push_back(num);
-        if (cin.peek() == '\n') {
-            cin.get();
-            break;
-        }
-    }
+    // cout << "Enter some numbers: ";
+    // while (cin >> num) {
+    //     ivec.push_back(num);
+    //     if (cin.peek() == '\n') {
+    //         cin.get();
+    //         break;
+    //     }
+    // }
 
-    cout << "Show sum of adjacenet values: \n";
-    for (auto i = ivec.cbegin();  i < ivec.cend(); i+=2) {
-        if ( (i + 1) >= ivec.cend())
-            break;        
-        cout << *i << " + " << *(i+1) << " = " << *i + *(i+1) << endl;
-    }
+    // cout << "Show sum of adjacenet values: \n";
+    // for (auto i = ivec.cbegin();  i < ivec.cend(); i+=2) {
+    //     if ( (i + 1) >= ivec.cend())
+    //         break;        
+    //     cout << *i << " + " << *(i+1) << " = " << *i + *(i+1) << endl;
+    // }
 
-    // take note where a and b is initially.     
-    cout << "Show sum of first and last numbers and so on...: \n";
-    for (auto a = ivec.cbegin(), b = ivec.cend()-1; a < b; a++, b-- ) {
-        cout << *a << " + " << *b << " = " << (*a) + (*b) << endl;
-    }
+    // // take note where a and b is initially.     
+    // cout << "Show sum of first and last numbers and so on...: \n";
+    // for (auto a = ivec.cbegin(), b = ivec.cend()-1; a < b; a++, b-- ) {
+    //     cout << *a << " + " << *b << " = " << (*a) + (*b) << endl;
+    // }
 
-    vector<string> text{};
+    // vector<string> text{};
 
-    for (auto it = text.cbegin(); it != text.cend() && !it->empty(); ++it)
-        cout << *it << endl;
+    // for (auto it = text.cbegin(); it != text.cend() && !it->empty(); ++it)
+    //     cout << *it << endl;
+
+// Exercise 3.26
+    // mid = beg + (end - beg) / 2; instead of mid = (beg + end) / 2, the second case can cause overflow when adding beg and end.
+
+
+// 3.5 Arrays
+    // If you don’t know exactly how many elements you need, use a vector.
+
+    // int arr[10];                // an array of 10 integers
+    // int *ptrs[10];              // ptrs is an array of ten pointers to int
+    // int (*Parray)[10] = &arr;   // Parray points to an array of ten ints.
+    // int (&arrRef)[10] = arr;    // arrRef is an reference, it refers an array of ten ints.
+
+    // count the number of grades by clusters of ten: 0--9, 10--19, ... 90--99, 100
+    // unsigned scores[11] = {}; // 11 buckets, all value initialized to 0
+    // unsigned grade;
+
+    // // count the number of grades by clusters of ten: 0--9, 10--19, ... 90--99, 100
+    // unsigned scores[11] = {}; // 11 buckets, all value initialized to 0
+    // unsigned grade;
+    // while (cin >> grade) {
+    //     if (grade <= 100)
+    //         ++scores[grade/10]; // increment the counter for the current cluster
+    // }
+    
+    // Exercise 3.31: Write a program to define an array of ten ints. 
+    // Give each element the same value as its position in the array.
+
+    // const int8_t arraySize = 10;
+    // int intArray[arraySize];
+    // for (int8_t i = 0; i < arraySize; i++ ) {
+    //     intArray[i] = i;
+    // }
+
+    // // Exercise 3.32: Copy the array you defined in the previous exercise into another array.
+    // // Rewrite your program to use vectors.
+
+    // std::vector<int> intVector(std::begin(intArray), std::end(intArray));
+
+    // Using pointers to loop through the printing the elements in arr as follows:
+    // int arr[] = {0,1,2,3,4,5,6,7,8,9};
+    // int *e = &arr[10]; // pointer just past the last element in arr
+    // for (int *b = arr; b != e; ++b)
+    // cout << *b << endl; // print the elements in arr
+
+    Screen myScreen(5, 3, 'x');
+    const Screen blank(5, 3, 'y');
+    myScreen.move(3,0).set('#').move(1,0).set('X').display(cout);
+    cout << endl;
+    blank.display(cout);
 
     return 0;
 }
 
-// https://cpp-primer.pages.dev/book/033-3.4._introducing_iterators.html
+
+
+
+
+
+
+// https://cpp-primer.pages.dev/book/075-7.3._additional_class_features.html

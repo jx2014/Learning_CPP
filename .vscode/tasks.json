@@ -11,7 +11,8 @@
                 "/Fe${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "${file}",
                 "user32.lib",
-                "gdi32.lib"
+                "gdi32.lib",
+                "msimg32.lib"
             ],
             "options": {
                 "cwd": "${fileDirname}"

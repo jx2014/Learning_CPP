@@ -152,3 +152,5 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 // https://learn.microsoft.com/en-us/windows/win32/learnwin32/managing-application-state-
+// https://learn.microsoft.com/en-us/windows/win32/learnwin32/initializing-the-com-library
+// https://learn.microsoft.com/en-us/windows/win32/learnwin32/example--the-open-dialog-box

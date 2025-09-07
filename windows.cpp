@@ -1,3 +1,4 @@
+#include <initguid.h>
 #include <windows.h>
 #include <objbase.h>
 #include <shobjidl.h> 
@@ -8,13 +9,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 {
     HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | 
         COINIT_DISABLE_OLE1DDE);
+    
     if (SUCCEEDED(hr))
     {
         IFileOpenDialog *pFileOpen;
 
         // Create the FileOpenDialog object.
-        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, 
-                IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+        // hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, 
+        //         IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+        hr = CoCreateInstance(__uuidof(IFileOpenDialog), NULL, CLSCTX_ALL, 
+                            __uuidof(IFileDialogCustomize), reinterpret_cast<void**>(&pFileOpen));
 
         if (SUCCEEDED(hr))
         {
@@ -47,6 +52,4 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
     return 0;
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/learnwin32/managing-application-state-
-// https://learn.microsoft.com/en-us/windows/win32/learnwin32/initializing-the-com-library
-// https://learn.microsoft.com/en-us/windows/win32/learnwin32/asking-an-object-for-an-interface
+https://learn.microsoft.com/en-us/windows/win32/learnwin32/error-handling-in-com

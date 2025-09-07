@@ -52,4 +52,4 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
     return 0;
 }
 
-https://learn.microsoft.com/en-us/windows/win32/learnwin32/error-handling-in-com
+// https://learn.microsoft.com/en-us/windows/win32/learnwin32/error-handling-in-com

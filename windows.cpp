@@ -3,53 +3,183 @@
 #include <objbase.h>
 #include <shobjidl.h> 
 
-#pragma comment(lib, "ole32.lib")
+// #pragma comment(lib, "ole32.lib")
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
+#include <d2d1.h>
+#pragma comment(lib, "d2d1")
+
+#include "basewin.h"
+
+template <class T> void SafeRelease(T **ppT)
 {
-    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | 
-        COINIT_DISABLE_OLE1DDE);
-    
-    if (SUCCEEDED(hr))
+    if (*ppT)
     {
-        IFileOpenDialog *pFileOpen;
+        (*ppT)->Release();
+        *ppT = NULL;
+    }
+}
 
-        // Create the FileOpenDialog object.
-        // hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, 
-        //         IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+class MainWindow : public BaseWindow<MainWindow>
+{
+    ID2D1Factory            *pFactory;
+    ID2D1HwndRenderTarget   *pRenderTarget;
+    ID2D1SolidColorBrush    *pBrush;
+    D2D1_ELLIPSE            ellipse;
 
-        hr = CoCreateInstance(__uuidof(IFileOpenDialog), NULL, CLSCTX_ALL, 
-                            __uuidof(IFileDialogCustomize), reinterpret_cast<void**>(&pFileOpen));
+    void    CalculateLayout();
+    HRESULT CreateGraphicsResources();
+    void    DiscardGraphicsResources();
+    void    OnPaint();
+    void    Resize();
+
+public:
+
+    MainWindow() : pFactory(NULL), pRenderTarget(NULL), pBrush(NULL)
+    {
+    }
+
+    PCWSTR  ClassName() const { return L"Circle Window Class"; }
+    LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
+};
+
+// Recalculate drawing layout when the size of the window changes.
+
+void MainWindow::CalculateLayout()
+{
+    if (pRenderTarget != NULL)
+    {
+        D2D1_SIZE_F size = pRenderTarget->GetSize();
+        const float x = size.width / 2;
+        const float y = size.height / 2;
+        const float radius = min(x, y);
+        ellipse = D2D1::Ellipse(D2D1::Point2F(x, y), radius, radius);
+    }
+}
+
+HRESULT MainWindow::CreateGraphicsResources()
+{
+    HRESULT hr = S_OK;
+    if (pRenderTarget == NULL)
+    {
+        RECT rc;
+        GetClientRect(m_hwnd, &rc);
+
+        D2D1_SIZE_U size = D2D1::SizeU(rc.right, rc.bottom);
+
+        hr = pFactory->CreateHwndRenderTarget(
+            D2D1::RenderTargetProperties(),
+            D2D1::HwndRenderTargetProperties(m_hwnd, size),
+            &pRenderTarget);
 
         if (SUCCEEDED(hr))
         {
-            // Show the Open dialog box.
-            hr = pFileOpen->Show(NULL);
+            const D2D1_COLOR_F color = D2D1::ColorF(1.0f, 1.0f, 0);
+            hr = pRenderTarget->CreateSolidColorBrush(color, &pBrush);
 
-            // Get the file name from the dialog box.
             if (SUCCEEDED(hr))
             {
-                IShellItem *pItem;
-                hr = pFileOpen->GetResult(&pItem);
-                if (SUCCEEDED(hr))
-                {
-                    PWSTR pszFilePath;
-                    hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-
-                    // Display the file name to the user.
-                    if (SUCCEEDED(hr))
-                    {
-                        MessageBoxW(NULL, pszFilePath, L"File Path", MB_OK);
-                        CoTaskMemFree(pszFilePath);
-                    }
-                    pItem->Release();
-                }
+                CalculateLayout();
             }
-            pFileOpen->Release();
         }
-        CoUninitialize();
     }
+    return hr;
+}
+
+void MainWindow::DiscardGraphicsResources()
+{
+    SafeRelease(&pRenderTarget);
+    SafeRelease(&pBrush);
+}
+
+void MainWindow::OnPaint()
+{
+    HRESULT hr = CreateGraphicsResources();
+    if (SUCCEEDED(hr))
+    {
+        PAINTSTRUCT ps;
+        BeginPaint(m_hwnd, &ps);
+     
+        pRenderTarget->BeginDraw();
+
+        pRenderTarget->Clear( D2D1::ColorF(D2D1::ColorF::SkyBlue) );
+        pRenderTarget->FillEllipse(ellipse, pBrush);
+
+        hr = pRenderTarget->EndDraw();
+        if (FAILED(hr) || hr == D2DERR_RECREATE_TARGET)
+        {
+            DiscardGraphicsResources();
+        }
+        EndPaint(m_hwnd, &ps);
+    }
+}
+
+void MainWindow::Resize()
+{
+    if (pRenderTarget != NULL)
+    {
+        RECT rc;
+        GetClientRect(m_hwnd, &rc);
+
+        D2D1_SIZE_U size = D2D1::SizeU(rc.right, rc.bottom);
+
+        pRenderTarget->Resize(size);
+        CalculateLayout();
+        InvalidateRect(m_hwnd, NULL, FALSE);
+    }
+}
+
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
+{
+    MainWindow win;
+
+    if (!win.Create(L"Circle", WS_OVERLAPPEDWINDOW))
+    {
+        return 0;
+    }
+
+    ShowWindow(win.Window(), nCmdShow);
+
+    // Run the message loop.
+
+    MSG msg = { };
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
     return 0;
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/learnwin32/error-handling-in-com
+LRESULT MainWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+    case WM_CREATE:
+        if (FAILED(D2D1CreateFactory(
+                D2D1_FACTORY_TYPE_SINGLE_THREADED, &pFactory)))
+        {
+            return -1;  // Fail CreateWindowEx.
+        }
+        return 0;
+
+    case WM_DESTROY:
+        DiscardGraphicsResources();
+        SafeRelease(&pFactory);
+        PostQuitMessage(0);
+        return 0;
+
+    case WM_PAINT:
+        OnPaint();
+        return 0;
+
+
+
+    case WM_SIZE:
+        Resize();
+        return 0;
+    }
+    return DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+}
+
+// https://learn.microsoft.com/en-us/windows/win32/learnwin32/your-first-direct2d-program
